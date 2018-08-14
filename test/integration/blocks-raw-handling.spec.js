@@ -12,12 +12,12 @@ import {
 	rawHandler,
 	serialize,
 } from '@wordpress/blocks';
-import { registerCoreBlocks } from '@wordpress/core-blocks';
+import { registerCoreBlocks } from '@wordpress/block-library';
 
 describe( 'Blocks raw handling', () => {
 	beforeAll( () => {
 		// Load all hooks that modify blocks
-		require( 'editor/hooks' );
+		require( '../../packages/editor/src/hooks' );
 		registerCoreBlocks();
 	} );
 
