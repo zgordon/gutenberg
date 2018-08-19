@@ -3,6 +3,7 @@
  */
 import RCTAztecView from 'react-native-aztec';
 import { View } from 'react-native';
+import { BlackPortal } from 'react-native-portal';
 import {
 	forEach,
 	merge,
@@ -136,7 +137,9 @@ export class RichText extends Component {
 
 		return (
 			<View>
-				{ formatToolbar }
+				<BlackPortal name='blockFormatToolbar'>
+					{ formatToolbar }
+				</BlackPortal>
 				<RCTAztecView
 					text={ { text: html, eventCount: eventCount } }
 					onChange={ this.onChange }
