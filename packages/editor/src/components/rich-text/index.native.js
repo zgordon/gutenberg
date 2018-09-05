@@ -13,7 +13,10 @@ import {
  */
 import { Component, RawHTML, renderToString } from '@wordpress/element';
 import { withInstanceId, compose } from '@wordpress/compose';
-import { children } from '@wordpress/blocks';
+import {
+	getActiveFormat,
+	toString,
+} from '@wordpress/rich-text-structure';
 
 /**
  * Internal dependencies
@@ -35,6 +38,11 @@ export class RichText extends Component {
 		this.onContentSizeChange = this.onContentSizeChange.bind( this );
 		this.changeFormats = this.changeFormats.bind( this );
 		this.onActiveFormatsChange = this.onActiveFormatsChange.bind( this );
+		this.applyFormat = this.applyFormat.bind( this );
+		this.removeFormat = this.removeFormat.bind( this );
+		this.getActiveFormat = this.getActiveFormat.bind( this );
+		this.toggleFormat = this.toggleFormat.bind( this );
+
 		this.state = {
 			formats: {},
 			selectedNodeId: 0,
@@ -116,8 +124,33 @@ export class RichText extends Component {
 		this._editor.applyFormat( format );
 	}
 
+	/**
+	 * Get the current format based on the selection
+	 *
+	 * @param {string} formatType The type of format to check.
+	 *
+	 * @return {boolean} Whether the format is active or not.
+	 */
+	getActiveFormat( formatType ) {
+		return false;//getActiveFormat( this.getRecord(), formatType );
+	}
+
+	/**
+	 * Toggle a format based on the selection.
+	 *
+	 * @param {Object} format The format to toggle.
+	 */
+	toggleFormat( format ) {
+		if ( this.getActiveFormat( format.type ) ) {
+			this.removeFormat( format.type );
+		} else {
+			debugger;
+			this.applyFormat( format );
+		}
+	}
+
 	// eslint-disable-next-line no-unused-vars
-	applyFormat( format, args, node ) {
+	applyFormat( format ) {
 		this._editor.applyFormat( format );
 	}
 
@@ -150,13 +183,16 @@ export class RichText extends Component {
 			<FormatToolbar
 				formats={ this.state.formats }
 				onChange={ this.changeFormats }
+				getActiveFormat={ this.getActiveFormat }
+				toggleFormat={ this.toggleFormat }
 				enabledControls={ formattingControls }
 				customControls={ formatters }
 			/>
 		);
 
 		// Save back to HTML from React tree
-		const html = '<' + tagName + '>' + renderToString( this.props.content.contentTree ) + '</' + tagName + '>';
+		// XXX: using content.contentTree.text here is only a test, this needs to properly serialize from the internal representation into html to be used in Aztec.
+		const html = '<' + tagName + '>' + renderToString( this.props.content.contentTree.text ) + '</' + tagName + '>';
 		const eventCount = this.props.content.eventCount;
 
 		return (
@@ -182,35 +218,24 @@ export class RichText extends Component {
 
 RichText.defaultProps = {
 	formattingControls: FORMATTING_CONTROLS.map( ( { format } ) => format ),
-	formatters: [],
-	format: 'children',
 };
 
 const RichTextContainer = compose( [
 	withInstanceId,
 ] )( RichText );
 
-RichTextContainer.Content = ( { value, format, tagName: Tag, ...props } ) => {
-	let content;
-	switch ( format ) {
-		case 'string':
-			content = <RawHTML>{ value }</RawHTML>;
-			break;
-
-		case 'children':
-			content = <RawHTML>{ children.toHTML( value ) }</RawHTML>;
-			break;
-	}
+RichTextContainer.Content = ( { value, tagName: Tag, multiline, ...props } ) => {
+	const content = (
+		<RawHTML>
+			{ toString( value, multiline ) }
+		</RawHTML>
+	);
 
 	if ( Tag ) {
 		return <Tag { ...props }>{ content }</Tag>;
 	}
 
 	return content;
-};
-
-RichTextContainer.Content.defaultProps = {
-	format: 'children',
 };
 
 export default RichTextContainer;
