@@ -1,0 +1,12 @@
+[
+    {
+        "blockName": "core/table",
+        "attrs": null,
+        "innerBlocks": [],
+        "innerHTML": "\n<div class=\"wp-block-table\"><table style=\"width:80px;height:300px\"><tbody><tr><td>eecweecwecee</td><td>wece</td></tr><tr><td>ewcwec</td><td>ecwewecw</td></tr></tbody></table></div>\n"
+    },
+    {
+        "attrs": {},
+        "innerHTML": "\n"
+    }
+]

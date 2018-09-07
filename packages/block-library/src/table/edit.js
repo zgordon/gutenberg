@@ -8,11 +8,12 @@ import classnames from 'classnames';
  */
 import { Fragment, Component } from '@wordpress/element';
 import { InspectorControls, BlockControls, RichText } from '@wordpress/editor';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	PanelBody,
 	ToggleControl,
 	TextControl,
+	SelectControl,
 	Button,
 	Toolbar,
 	DropdownMenu,
@@ -28,6 +29,9 @@ import {
 	deleteRow,
 	insertColumn,
 	deleteColumn,
+	getTableStyles,
+	getStyleValue,
+	getStyleUnit,
 } from './state';
 
 export default class TableEdit extends Component {
@@ -36,6 +40,10 @@ export default class TableEdit extends Component {
 
 		this.onCreateTable = this.onCreateTable.bind( this );
 		this.onChangeFixedLayout = this.onChangeFixedLayout.bind( this );
+		this.setWidth = this.setWidth.bind( this );
+		this.onChangeWidth = this.onChangeWidth.bind( this );
+		this.onChangeWidthUnit = this.onChangeWidthUnit.bind( this );
+		this.onChangeHeight = this.onChangeHeight.bind( this );
 		this.onChange = this.onChange.bind( this );
 		this.onChangeInitialColumnCount = this.onChangeInitialColumnCount.bind( this );
 		this.onChangeInitialRowCount = this.onChangeInitialRowCount.bind( this );
@@ -54,6 +62,7 @@ export default class TableEdit extends Component {
 			initialRowCount: 2,
 			initialColumnCount: 2,
 			selectedCell: null,
+			widthUnit: getStyleUnit( this.props.attributes.width ) || '%',
 		};
 	}
 
@@ -103,6 +112,55 @@ export default class TableEdit extends Component {
 		const { hasFixedLayout } = attributes;
 
 		setAttributes( { hasFixedLayout: ! hasFixedLayout } );
+	}
+
+	/**
+	 * Set the width attribute of the table.
+	 *
+	 * @param {string|number} rawWidth The width of the table.
+	 * @param {string} widthUnit       The width unit to use (e.g. px, %).
+	 */
+	setWidth( rawWidth, widthUnit ) {
+		const width = getStyleValue( rawWidth );
+		if ( ! width ) {
+			this.props.setAttributes( { width: undefined } );
+		} else {
+			this.props.setAttributes( { width: `${ width }${ widthUnit }` } );
+		}
+	}
+
+	/**
+	 * Handle a change of the width of the table.
+	 *
+	 * @param {string} width     The new width of the table.
+	 * @param {string} widthUnit The width unit to use (e.g. px, %).
+	 */
+	onChangeWidth( width ) {
+		this.setWidth( width, this.state.widthUnit );
+	}
+
+	/**
+	 * Handle a change of the width unit.
+	 *
+	 * @param {string} widthUnit The new width unit (e.g. px, %).
+	 */
+	onChangeWidthUnit( widthUnit ) {
+		this.setState( { widthUnit } );
+		this.setWidth( this.props.attributes.width, widthUnit );
+	}
+
+	/**
+	 * Update the height of the table.
+	 *
+	 * @param {string} rawHeight The new height of the table.
+	 */
+	onChangeHeight( rawHeight ) {
+		const height = getStyleValue( rawHeight );
+		if ( height === undefined ) {
+			this.props.setAttributes( { height: undefined } );
+		} else {
+			this.props.setAttributes( { height: `${ height }px` } );
+		}
 	}
 
 	/**
@@ -361,8 +419,8 @@ export default class TableEdit extends Component {
 
 	render() {
 		const { attributes, className } = this.props;
-		const { initialRowCount, initialColumnCount } = this.state;
-		const { hasFixedLayout, head, body, foot } = attributes;
+		const { initialRowCount, initialColumnCount, widthUnit } = this.state;
+		const { hasFixedLayout, head, body, foot, width, height } = attributes;
 		const isEmpty = ! head.length && ! body.length && ! foot.length;
 		const Section = this.renderSection;
 
@@ -392,6 +450,9 @@ export default class TableEdit extends Component {
 			'has-fixed-layout': hasFixedLayout,
 		} );
 
+		// translators: %s: a unit of measurement for CSS (e.g. 'px' or '%')
+		const widthLabel = widthUnit ? sprintf( __( 'Width (%s)' ), widthUnit ) : __( 'Width' );
+
 		return (
 			<Fragment>
 				<BlockControls>
@@ -405,6 +466,39 @@ export default class TableEdit extends Component {
 				</BlockControls>
 				<InspectorControls>
 					<PanelBody title={ __( 'Table Settings' ) } className="blocks-table-settings">
+						<div className="block-library-table__dimensions__row">
+							<TextControl
+								type="number"
+								className="block-library-table__dimensions__width"
+								label={ widthLabel }
+								value={ getStyleValue( width ) }
+								min={ 1 }
+								onChange={ this.onChangeWidth }
+							/>
+							<SelectControl
+								label={ __( 'Width Unit' ) }
+								options={ [
+									{
+										value: '%',
+										label: '%',
+									},
+									{
+										value: 'px',
+										label: 'px',
+									},
+								] }
+								value={ widthUnit }
+								onChange={ this.onChangeWidthUnit }
+							/>
+						</div>
+						<TextControl
+							type="number"
+							className="block-library-table__dimensions__height"
+							label={ __( 'Height (px)' ) }
+							value={ getStyleValue( height ) }
+							min={ 1 }
+							onChange={ this.onChangeHeight }
+						/>
 						<ToggleControl
 							label={ __( 'Fixed width table cells' ) }
 							checked={ !! hasFixedLayout }
@@ -412,7 +506,7 @@ export default class TableEdit extends Component {
 						/>
 					</PanelBody>
 				</InspectorControls>
-				<table className={ classes }>
+				<table className={ classes } style={ getTableStyles( attributes ) }>
 					<Section type="head" rows={ head } />
 					<Section type="body" rows={ body } />
 					<Section type="foot" rows={ foot } />

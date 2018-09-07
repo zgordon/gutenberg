@@ -1,0 +1,14 @@
+[
+    {
+        "blockName": "core/table",
+        "attrs": {
+            "hasFixedLayout": true
+        },
+        "innerBlocks": [],
+        "innerHTML": "\n<div class=\"wp-block-table has-fixed-layout\"><table style=\"width:100%;\"><tbody><tr><td>eecweecwecee</td><td>wece</td></tr><tr><td>ewcwec</td><td>ecwewecw</td></tr></tbody></table></div>\n"
+    },
+    {
+        "attrs": {},
+        "innerHTML": "\n"
+    }
+]
