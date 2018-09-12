@@ -20,6 +20,11 @@ import {
 	isEmptyElement,
 } from '@wordpress/element';
 
+/**
+ * Internal dependencies
+ */
+import { SlotContent } from './portals';
+
 class Slot extends Component {
 	constructor() {
 		super( ...arguments );
@@ -84,9 +89,9 @@ class Slot extends Component {
 		);
 
 		return (
-			<Fragment>
+			<SlotContent name={ name }>
 				{ isFunction( children ) ? children( fills ) : fills }
-			</Fragment>
+			</SlotContent>
 		);
 	}
 }
