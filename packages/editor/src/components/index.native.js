@@ -1,3 +1,4 @@
+export { default as BlockFormatControls } from './block-format-controls';
 export * from './colors';
 export * from './font-sizes';
 export { default as PlainText } from './plain-text';

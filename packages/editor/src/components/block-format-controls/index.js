@@ -10,7 +10,7 @@ import { ifBlockEditSelected } from '../block-edit/context';
 
 const { Fill, Slot } = createSlotFill( 'BlockFormatControls' );
 
-const BlockFormatControls = ifBlockEditSelected( Fill );
+const BlockFormatControls = Fill;//ifBlockEditSelected( Fill );
 
 BlockFormatControls.Slot = Slot;
 

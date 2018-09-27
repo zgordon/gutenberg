@@ -18,8 +18,10 @@ import { children } from '@wordpress/blocks';
 /**
  * Internal dependencies
  */
+import BlockFormatControls from '../block-format-controls';
 import FormatToolbar from './format-toolbar';
 import { FORMATTING_CONTROLS } from './formatting-controls';
+import { withBlockEditContext } from '../block-edit/context';
 import { isRichTextValueEmpty } from './utils';
 
 export function getFormatValue( formatName ) {
@@ -156,6 +158,7 @@ export class RichText extends Component {
 		const {
 			tagName,
 			style,
+			inlineToolbar = false,
 			formattingControls,
 			formatters,
 			value,
@@ -173,9 +176,17 @@ export class RichText extends Component {
 		// Save back to HTML from React tree
 		const html = '<' + tagName + '>' + renderToString( value ) + '</' + tagName + '>';
 
+		var isSelected = false;
+		if ( html.includes('World!')) {
+			isSelected = true;
+		}
 		return (
 			<View>
-				{ formatToolbar }
+				{ isSelected && (
+					<BlockFormatControls>
+						{ formatToolbar }
+					</BlockFormatControls>
+				) }
 				<RCTAztecView
 					ref={ ( ref ) => {
 						this._editor = ref;
@@ -204,6 +215,25 @@ RichText.defaultProps = {
 
 const RichTextContainer = compose( [
 	withInstanceId,
+	withBlockEditContext( ( context, ownProps ) => {
+		// When explicitly set as not selected, do nothing.
+		if ( ownProps.isSelected === false ) {
+			return {};
+		}
+		// When explicitly set as selected, use the value stored in the context instead.
+		if ( ownProps.isSelected === true ) {
+			return {
+				isSelected: context.isSelected,
+			};
+		}
+
+		const sel = renderToString( ownProps.value ).includes('World!');
+		// Ensures that only one RichText component can be focused.
+		return {
+			isSelected: sel,
+			setFocusedElement: context.setFocusedElement,
+		};
+	} ),
 ] )( RichText );
 
 RichTextContainer.Content = ( { value, format, tagName: Tag, ...props } ) => {
