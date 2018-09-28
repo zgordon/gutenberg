@@ -1,3 +1,4 @@
+export { default as BlockEdit } from './block-edit';
 export { default as BlockFormatControls } from './block-format-controls';
 export * from './colors';
 export * from './font-sizes';
