@@ -160,6 +160,7 @@ export class RichText extends Component {
 			style,
 			inlineToolbar = false,
 			formattingControls,
+			isSelected,
 			formatters,
 			value,
 		} = this.props;
@@ -176,10 +177,6 @@ export class RichText extends Component {
 		// Save back to HTML from React tree
 		const html = '<' + tagName + '>' + renderToString( value ) + '</' + tagName + '>';
 
-		var isSelected = false;
-		if ( html.includes('World!')) {
-			isSelected = true;
-		}
 		return (
 			<View>
 				{ isSelected && (
@@ -227,10 +224,9 @@ const RichTextContainer = compose( [
 			};
 		}
 
-		const sel = renderToString( ownProps.value ).includes('World!');
 		// Ensures that only one RichText component can be focused.
 		return {
-			isSelected: sel,
+			isSelected: context.isSelected,
 			setFocusedElement: context.setFocusedElement,
 		};
 	} ),
