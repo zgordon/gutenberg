@@ -35,12 +35,12 @@ export class BlockInvalidWarning extends Component {
 	}
 
 	render() {
-		const { convertToHTML, convertToBlocks, convertToClassic, overwriteBlock, block } = this.props;
+		const { convertToHTML, convertToBlocks, convertToClassic, attemptBlockRecovery, block } = this.props;
 		const hasHTMLBlock = !! getBlockType( 'core/html' );
 		const { compare } = this.state;
 		const hiddenActions = [
 			{ title: __( 'Convert to Classic Block' ), onClick: convertToClassic },
-			{ title: __( 'Overwrite with Valid Block' ), onClick: overwriteBlock },
+			{ title: __( 'Attempt Block Recovery' ), onClick: attemptBlockRecovery },
 		];
 
 		if ( compare ) {
@@ -91,7 +91,7 @@ const blockToBlocks = ( block ) => rawHandler( {
 	HTML: block.originalContent,
 	mode: 'BLOCKS',
 } );
-const blockOverwrite = ( { name, attributes } ) => createBlock( name, attributes );
+const recoverBlock = ( { name, attributes, innerBlocks } ) => createBlock( name, attributes, innerBlocks );
 
 export default withDispatch( ( dispatch, { block } ) => {
 	const { replaceBlock } = dispatch( 'core/editor' );
@@ -106,8 +106,8 @@ export default withDispatch( ( dispatch, { block } ) => {
 		convertToBlocks() {
 			replaceBlock( block.clientId, blockToBlocks( block ) );
 		},
-		overwriteBlock() {
-			replaceBlock( block.clientId, blockOverwrite( block ) );
+		attemptBlockRecovery() {
+			replaceBlock( block.clientId, recoverBlock( block ) );
 		},
 	};
 } )( BlockInvalidWarning );
