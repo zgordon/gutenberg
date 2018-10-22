@@ -23,6 +23,7 @@ import {
 	withColors,
 	getColorClassName,
 } from '@wordpress/editor';
+import { has } from 'lodash';
 
 const validAlignments = [ 'left', 'center', 'right', 'wide', 'full' ];
 
@@ -235,7 +236,7 @@ export const settings = {
 				backgroundColor: overlayColor.color,
 			};
 
-			if ( focalPoint ) {
+			if ( ! hasParallax && validFocalPoint( focalPoint ) ) {
 				style.backgroundPosition = `${ focalPoint.x * 100 }% ${ focalPoint.y * 100 }%`;
 			}
 
@@ -291,7 +292,7 @@ export const settings = {
 										onChange={ toggleParallax }
 									/>
 								) }
-								{ IMAGE_BACKGROUND_TYPE === backgroundType && ! hasParallax && (
+								{ IMAGE_BACKGROUND_TYPE === backgroundType && ! hasParallax && validDimensions( dimensions ) && (
 									<FocalPointPicker
 										label={ __( 'Focal Point Picker' ) }
 										url={ url }
@@ -410,7 +411,7 @@ export const settings = {
 		if ( ! overlayColorClass ) {
 			style.backgroundColor = customOverlayColor;
 		}
-		if ( focalPoint && ! hasParallax ) {
+		if ( ! hasParallax && validFocalPoint( focalPoint ) ) {
 			style.backgroundPosition = `${ focalPoint.x * 100 }% ${ focalPoint.y * 100 }%`;
 		}
 
@@ -520,4 +521,12 @@ function backgroundImageStyles( url ) {
 	return url ?
 		{ backgroundImage: `url(${ url })` } :
 		{};
+}
+
+function validFocalPoint( focalPoint ) {
+	return ( focalPoint && has( focalPoint, [ 'x' ] ) && has( focalPoint, [ 'y' ] ) );
+}
+
+function validDimensions( dimensions ) {
+	return ( dimensions && has( dimensions, [ 'height' ] ) && has( dimensions, [ 'width' ] ) );
 }
