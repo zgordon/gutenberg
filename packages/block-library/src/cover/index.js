@@ -6,7 +6,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { IconButton, PanelBody, RangeControl, ToggleControl, Toolbar, withNotices } from '@wordpress/components';
+import { IconButton, FocalPointPicker, PanelBody, RangeControl, ToggleControl, Toolbar, withNotices } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
@@ -61,6 +61,12 @@ const blockAttributes = {
 	backgroundType: {
 		type: 'string',
 		default: 'image',
+	},
+	focalPoint: {
+		type: 'object',
+	},
+	dimensions: {
+		type: 'object',
 	},
 };
 
@@ -174,6 +180,8 @@ export const settings = {
 				backgroundType,
 				contentAlign,
 				dimRatio,
+				dimensions,
+				focalPoint,
 				hasParallax,
 				id,
 				title,
@@ -208,6 +216,10 @@ export const settings = {
 					url: media.url,
 					id: media.id,
 					backgroundType: mediaType,
+					dimensions: {
+						height: media.height,
+						width: media.width,
+					},
 				} );
 			};
 			const toggleParallax = () => setAttributes( { hasParallax: ! hasParallax } );
@@ -223,6 +235,10 @@ export const settings = {
 				backgroundColor: overlayColor.color,
 			};
 
+			if ( focalPoint ) {
+				style.backgroundPosition = `${ focalPoint.x * 100 }% ${ focalPoint.y * 100 }%`;
+			}
+
 			const classes = classnames(
 				className,
 				contentAlign !== 'center' && `has-${ contentAlign }-content`,
@@ -232,7 +248,6 @@ export const settings = {
 					'has-parallax': hasParallax,
 				}
 			);
-
 			const controls = (
 				<Fragment>
 					<BlockControls>
@@ -274,6 +289,15 @@ export const settings = {
 										label={ __( 'Fixed Background' ) }
 										checked={ hasParallax }
 										onChange={ toggleParallax }
+									/>
+								) }
+								{ IMAGE_BACKGROUND_TYPE === backgroundType && ! hasParallax && (
+									<FocalPointPicker
+										label={ __( 'Focal Point Picker' ) }
+										url={ url }
+										dimensions={ dimensions }
+										value={ focalPoint }
+										onChange={ ( value ) => setAttributes( { focalPoint: value } ) }
 									/>
 								) }
 								<PanelColorSettings
@@ -373,6 +397,7 @@ export const settings = {
 			contentAlign,
 			customOverlayColor,
 			dimRatio,
+			focalPoint,
 			hasParallax,
 			overlayColor,
 			title,
@@ -384,6 +409,9 @@ export const settings = {
 			{};
 		if ( ! overlayColorClass ) {
 			style.backgroundColor = customOverlayColor;
+		}
+		if ( focalPoint && ! hasParallax ) {
+			style.backgroundPosition = `${ focalPoint.x * 100 }% ${ focalPoint.y * 100 }%`;
 		}
 
 		const classes = classnames(
