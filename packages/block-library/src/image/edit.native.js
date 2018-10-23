@@ -8,20 +8,9 @@ import { View, Image } from 'react-native';
  */
 import { MediaPlaceholder } from '@wordpress/editor';
 
-export default function ImageEdit( { attributes } ) {
+export default function ImageEdit( props ) {
+	const { attributes, onMediaLibraryPress, onUploadPress } = props;
 	const { url } = attributes;
-
-	const onUploadPress = () => {
-		// This method should present an image picker from
-		// the device.
-		//TODO: Implement upload image method.
-	};
-
-	const onMediaLibraryPress = () => {
-		// This method should present an image picker from
-		// the WordPress media library.
-		//TODO: Implement media library method.
-	};
 
 	if ( ! url ) {
 		return (
