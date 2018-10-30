@@ -3,6 +3,7 @@
  */
 import { withSelect } from '@wordpress/data';
 import { Fragment } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal Dependencies
@@ -12,32 +13,39 @@ import MultiBlocksSwitcher from '../block-switcher/multi-blocks-switcher';
 import BlockControls from '../block-controls';
 import BlockFormatControls from '../block-format-controls';
 import BlockSettingsMenu from '../block-settings-menu';
+import NavigableToolbar from '../navigable-toolbar';
 
 function BlockToolbar( { blockClientIds, isValid, mode } ) {
 	if ( blockClientIds.length === 0 ) {
 		return null;
 	}
 
-	if ( blockClientIds.length > 1 ) {
-		return (
-			<div className="editor-block-toolbar">
-				<MultiBlocksSwitcher />
-				<BlockSettingsMenu clientIds={ blockClientIds } />
-			</div>
+	const hasMultiSelection = blockClientIds.length > 1;
+
+	let controls;
+	if ( hasMultiSelection ) {
+		controls = (
+			<MultiBlocksSwitcher />
+		);
+	} else if ( mode === 'visual' && isValid ) {
+		controls = (
+			<Fragment>
+				<BlockSwitcher clientIds={ blockClientIds } />
+				<BlockControls.Slot />
+				<BlockFormatControls.Slot />
+			</Fragment>
 		);
 	}
 
 	return (
-		<div className="editor-block-toolbar">
-			{ mode === 'visual' && isValid && (
-				<Fragment>
-					<BlockSwitcher clientIds={ blockClientIds } />
-					<BlockControls.Slot />
-					<BlockFormatControls.Slot />
-				</Fragment>
-			) }
+		<NavigableToolbar
+			className="editor-block-toolbar"
+			aria-label={ __( 'Block Toolbar' ) }
+			scopeId={ 'block-' + blockClientIds[ 0 ] }
+		>
+			{ controls }
 			<BlockSettingsMenu clientIds={ blockClientIds } />
-		</div>
+		</NavigableToolbar>
 	);
 }
 

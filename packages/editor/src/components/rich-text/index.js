@@ -54,6 +54,7 @@ import { decodeEntities } from '@wordpress/html-entities';
 import Autocomplete from '../autocomplete';
 import BlockFormatControls from '../block-format-controls';
 import FormatEdit from './format-edit';
+import NavigableToolbar from '../navigable-toolbar';
 import FormatToolbar from './format-toolbar';
 import TinyMCE from './tinymce';
 import { pickAriaProps } from './aria';
@@ -952,40 +953,61 @@ export class RichText extends Component {
 					record={ record }
 					onChange={ this.onChange }
 				>
-					{ ( { isExpanded, listBoxId, activeId } ) => (
-						<Fragment>
-							<TinyMCE
-								tagName={ Tagname }
-								getSettings={ this.getSettings }
-								onSetup={ this.onSetup }
-								style={ style }
-								defaultValue={ value }
-								isPlaceholderVisible={ isPlaceholderVisible }
-								aria-label={ placeholder }
-								aria-autocomplete="list"
-								aria-expanded={ isExpanded }
-								aria-owns={ listBoxId }
-								aria-activedescendant={ activeId }
-								{ ...ariaProps }
-								className={ className }
-								key={ key }
-								onPaste={ this.onPaste }
-								onInput={ this.onInput }
-								multilineTag={ this.multilineTag }
-								multilineWrapperTags={ this.multilineWrapperTags }
-								setRef={ this.setRef }
-							/>
-							{ isPlaceholderVisible &&
-								<Tagname
-									className={ classnames( 'editor-rich-text__tinymce', className ) }
+					{ ( { isExpanded, listBoxId, activeId } ) => {
+						let field = (
+							<Fragment>
+								<TinyMCE
+									tagName={ Tagname }
+									getSettings={ this.getSettings }
+									onSetup={ this.onSetup }
 									style={ style }
-								>
-									{ MultilineTag ? <MultilineTag>{ placeholder }</MultilineTag> : placeholder }
-								</Tagname>
-							}
-							{ isSelected && <FormatEdit value={ record } onChange={ this.onChange } /> }
-						</Fragment>
-					) }
+									defaultValue={ value }
+									isPlaceholderVisible={ isPlaceholderVisible }
+									aria-label={ placeholder }
+									aria-autocomplete="list"
+									aria-expanded={ isExpanded }
+									aria-owns={ listBoxId }
+									aria-activedescendant={ activeId }
+									{ ...ariaProps }
+									className={ className }
+									key={ key }
+									onPaste={ this.onPaste }
+									onInput={ this.onInput }
+									multilineTag={ this.multilineTag }
+									multilineWrapperTags={ this.multilineWrapperTags }
+									setRef={ this.setRef }
+								/>
+								{ isPlaceholderVisible &&
+									<Tagname
+										className={ classnames( 'editor-rich-text__tinymce', className ) }
+										style={ style }
+									>
+										{ MultilineTag ? <MultilineTag>{ placeholder }</MultilineTag> : placeholder }
+									</Tagname>
+								}
+							</Fragment>
+						);
+
+						if ( isSelected && inlineToolbar ) {
+							field = (
+								<NavigableToolbar.KeybindScope scopeId="editor-format-toolbar">
+									{ field }
+								</NavigableToolbar.KeybindScope>
+							);
+						}
+
+						return (
+							<Fragment>
+								{ field }
+								{ isSelected && (
+									<FormatEdit
+										value={ record }
+										onChange={ this.onChange }
+									/>
+								) }
+							</Fragment>
+						);
+					} }
 				</Autocomplete>
 			</div>
 		);
