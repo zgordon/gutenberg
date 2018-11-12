@@ -233,7 +233,7 @@ export const editor = flow( [
 	// Track undo history, starting at editor initialization.
 	withHistory( {
 		resetTypes: [ 'SETUP_EDITOR_STATE' ],
-		ignoreTypes: [ 'RECEIVE_BLOCKS', 'RESET_POST', 'UPDATE_POST' ],
+		ignoreTypes: [ 'RECEIVE_BLOCKS', 'RECEIVE_REUSABLE_BLOCKS', 'RESET_POST', 'UPDATE_POST' ],
 		shouldOverwriteState,
 	} ),
 ] )( {
@@ -284,7 +284,7 @@ export const editor = flow( [
 		// editor initialization firing post reset as an effect.
 		withChangeDetection( {
 			resetTypes: [ 'SETUP_EDITOR_STATE', 'REQUEST_POST_UPDATE_START' ],
-			ignoreTypes: [ 'RECEIVE_BLOCKS', 'RESET_POST', 'UPDATE_POST' ],
+			ignoreTypes: [ 'RECEIVE_BLOCKS', 'RECEIVE_REUSABLE_BLOCKS', 'RESET_POST', 'UPDATE_POST' ],
 		} ),
 	] )( {
 		byClientId( state = {}, action ) {
@@ -294,10 +294,15 @@ export const editor = flow( [
 					return getFlattenedBlocks( action.blocks );
 
 				case 'RECEIVE_BLOCKS':
+				case 'RECEIVE_REUSABLE_BLOCKS': {
+					const blocks = action.type === 'RECEIVE_BLOCKS' ?
+						action.blocks :
+						action.results.map( ( result ) => result.parsedBlock );
 					return {
 						...state,
-						...getFlattenedBlocks( action.blocks ),
+						...getFlattenedBlocks( blocks ),
 					};
+				}
 
 				case 'UPDATE_BLOCK_ATTRIBUTES':
 					// Ignore updates if block isn't known
@@ -397,10 +402,15 @@ export const editor = flow( [
 					return mapBlockOrder( action.blocks );
 
 				case 'RECEIVE_BLOCKS':
+				case 'RECEIVE_REUSABLE_BLOCKS': {
+					const blocks = action.type === 'RECEIVE_BLOCKS' ?
+						action.blocks :
+						action.results.map( ( result ) => result.parsedBlock );
 					return {
 						...state,
-						...omit( mapBlockOrder( action.blocks ), '' ),
+						...omit( mapBlockOrder( blocks ), '' ),
 					};
+				}
 
 				case 'INSERT_BLOCKS': {
 					const { rootClientId = '', blocks } = action;

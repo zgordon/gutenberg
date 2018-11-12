@@ -25,6 +25,7 @@ import actions, {
 	resetBlocks,
 	selectBlock,
 	setTemplateValidity,
+	__experimentalFetchReusableBlocks as fetchReusableBlocks,
 } from '../actions';
 import effects, { validateBlocksToTemplate } from '../effects';
 import { SAVE_POST_NOTICE_ID } from '../effects/posts';
@@ -420,6 +421,7 @@ describe( 'effects', () => {
 
 			expect( result ).toEqual( [
 				setupEditorState( post, [], {} ),
+				fetchReusableBlocks(),
 			] );
 		} );
 
@@ -450,6 +452,7 @@ describe( 'effects', () => {
 			expect( result[ 0 ].blocks ).toHaveLength( 1 );
 			expect( result ).toEqual( [
 				setupEditorState( post, result[ 0 ].blocks, {} ),
+				fetchReusableBlocks(),
 			] );
 		} );
 
@@ -478,6 +481,7 @@ describe( 'effects', () => {
 
 			expect( result ).toEqual( [
 				setupEditorState( post, [], { title: 'A History of Pork' } ),
+				fetchReusableBlocks(),
 			] );
 		} );
 	} );

@@ -1157,6 +1157,76 @@ describe( 'state', () => {
 
 					expect( state.present.blocks.byClientId ).toBe( state.present.blocks.byClientId );
 				} );
+
+				it( 'should receive blocks', () => {
+					const original = deepFreeze( editor( undefined, {
+						type: 'RESET_BLOCKS',
+						blocks: [ {
+							clientId: 'block1',
+							attributes: {},
+							innerBlocks: [],
+						} ],
+					} ) );
+					const state = editor( original, {
+						type: 'RECEIVE_BLOCKS',
+						blocks: [
+							{
+								clientId: 'block2',
+								attributes: {},
+								innerBlocks: [],
+							},
+							{
+								clientId: 'block3',
+								attributes: {},
+								innerBlocks: [],
+							},
+						],
+					} );
+
+					expect( state.present.blocks.byClientId ).toEqual( {
+						block1: { clientId: 'block1', attributes: {} },
+						block2: { clientId: 'block2', attributes: {} },
+						block3: { clientId: 'block3', attributes: {} },
+					} );
+				} );
+
+				it( 'should receive reusable blocks', () => {
+					const original = deepFreeze( editor( undefined, {
+						type: 'RESET_BLOCKS',
+						blocks: [ {
+							clientId: 'block1',
+							attributes: {},
+							innerBlocks: [],
+						} ],
+					} ) );
+					const state = editor( original, {
+						type: 'RECEIVE_REUSABLE_BLOCKS',
+						results: [
+							{
+								reusableBlock: {},
+								parsedBlock: {
+									clientId: 'block2',
+									attributes: {},
+									innerBlocks: [],
+								},
+							},
+							{
+								reusableBlock: {},
+								parsedBlock: {
+									clientId: 'block3',
+									attributes: {},
+									innerBlocks: [],
+								},
+							},
+						],
+					} );
+
+					expect( state.present.blocks.byClientId ).toEqual( {
+						block1: { clientId: 'block1', attributes: {} },
+						block2: { clientId: 'block2', attributes: {} },
+						block3: { clientId: 'block3', attributes: {} },
+					} );
+				} );
 			} );
 		} );
 

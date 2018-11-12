@@ -10,6 +10,14 @@ import {
 	META_KEY,
 } from '../support/utils';
 
+async function waitForAndInsertBlock( blockLabel ) {
+	// Since we are working with new posts, we need to wait for the inserter to
+	// finish fetching reusable blocks before clicking on the desired block.
+	await searchForBlock( blockLabel );
+	await page.waitForSelector( `button[aria-label="${ blockLabel }"]` );
+	await page.click( `button[aria-label="${ blockLabel }"]` );
+}
+
 function waitForAndAcceptDialog() {
 	return new Promise( ( resolve ) => {
 		page.once( 'dialog', () => resolve() );
@@ -40,11 +48,6 @@ describe( 'Reusable Blocks', () => {
 		await page.waitForXPath(
 			'//*[contains(@class, "components-notice") and contains(@class, "is-success")]/*[text()="Block created."]'
 		);
-
-		// Select all of the text in the title field by triple-clicking on it. We
-		// triple-click because, on Mac, Mod+A doesn't work. This step can be removed
-		// when https://github.com/WordPress/gutenberg/issues/7972 is fixed
-		await page.click( '.reusable-block-edit-panel__title', { clickCount: 3 } );
 
 		// Give the reusable block a title
 		await page.keyboard.type( 'Greeting block' );
@@ -109,7 +112,7 @@ describe( 'Reusable Blocks', () => {
 
 	it( 'can be inserted and edited', async () => {
 		// Insert the reusable block we created above
-		await insertBlock( 'Greeting block' );
+		await waitForAndInsertBlock( 'Greeting block' );
 
 		// Put the reusable block in edit mode
 		const [ editButton ] = await page.$x( '//button[text()="Edit"]' );
@@ -118,7 +121,7 @@ describe( 'Reusable Blocks', () => {
 		// Change the block's title
 		await page.keyboard.type( 'Surprised greeting block' );
 
-		// Tab three times to navigate to the block's content
+		// Tab two times to navigate to the block's content
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.press( 'Tab' );
 
@@ -153,7 +156,7 @@ describe( 'Reusable Blocks', () => {
 
 	it( 'can be converted to a regular block', async () => {
 		// Insert the reusable block we edited above
-		await insertBlock( 'Surprised greeting block' );
+		await waitForAndInsertBlock( 'Surprised greeting block' );
 
 		// Convert block to a regular block
 		await page.click( 'button[aria-label="More options"]' );
@@ -176,7 +179,7 @@ describe( 'Reusable Blocks', () => {
 
 	it( 'can be deleted', async () => {
 		// Insert the reusable block we edited above
-		await insertBlock( 'Surprised greeting block' );
+		await waitForAndInsertBlock( 'Surprised greeting block' );
 
 		// Delete the block and accept the confirmation dialog
 		await page.click( 'button[aria-label="More options"]' );
@@ -197,9 +200,7 @@ describe( 'Reusable Blocks', () => {
 	} );
 
 	it( 'can be created from multiselection', async () => {
-		await newPost();
-
-		// Insert a Two paragraphs block
+		// Insert two paragraph blocks
 		await insertBlock( 'Paragraph' );
 		await page.keyboard.type( 'Hello there!' );
 		await page.keyboard.press( 'Enter' );
@@ -213,7 +214,7 @@ describe( 'Reusable Blocks', () => {
 		await page.mouse.move( 200, 300, { steps: 10 } );
 		await page.mouse.move( 250, 350, { steps: 10 } );
 
-		// Convert block to a reusable block
+		// Convert blocks to a reusable block
 		await page.waitForSelector( 'button[aria-label="More options"]' );
 		await page.click( 'button[aria-label="More options"]' );
 		const convertButton = await page.waitForXPath( '//button[text()="Add to Reusable Blocks"]' );
@@ -223,11 +224,6 @@ describe( 'Reusable Blocks', () => {
 		await page.waitForXPath(
 			'//*[contains(@class, "components-notice") and contains(@class, "is-success")]/*[text()="Block created."]'
 		);
-
-		// Select all of the text in the title field by triple-clicking on it. We
-		// triple-click because, on Mac, Mod+A doesn't work. This step can be removed
-		// when https://github.com/WordPress/gutenberg/issues/7972 is fixed
-		await page.click( '.reusable-block-edit-panel__title', { clickCount: 3 } );
 
 		// Give the reusable block a title
 		await page.keyboard.type( 'Multi-selection reusable block' );
@@ -253,7 +249,7 @@ describe( 'Reusable Blocks', () => {
 
 	it( 'multi-selection reusable block can be converted back to regular blocks', async () => {
 		// Insert the reusable block we edited above
-		await insertBlock( 'Multi-selection reusable block' );
+		await waitForAndInsertBlock( 'Multi-selection reusable block' );
 
 		// Convert block to a regular block
 		await page.click( 'button[aria-label="More options"]' );
