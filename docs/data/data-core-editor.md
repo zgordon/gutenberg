@@ -1440,6 +1440,14 @@ post has been received, either by initialization or save.
 
  * post: Post object.
 
+### fetchAutosave
+
+Returns an action object used to fetch an autosave.
+
+*Parameters*
+
+ * postID: Autosave post object.
+
 ### resetAutosave
 
 Returns an action object used in signalling that the latest autosave of the
