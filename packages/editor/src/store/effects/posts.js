@@ -317,3 +317,18 @@ export const refreshPost = async ( action, store ) => {
 	} );
 	dispatch( resetPost( newPost ) );
 };
+
+/**
+ * Fetch Autosave Effect handler
+ *
+ * @param {Object} action action object.
+ * @param {Object} store  Redux Store.
+ */
+export const fetchAutosave = async ( action, store ) => {
+	const { dispatch } = store;
+	const { postID } = action;
+	const autosaveResponse = await apiFetch( { path: `/wp/v2/posts/${ postID }/autosaves?context=edit` } );
+	if ( autosaveResponse && autosaveResponse[ 0 ] ) {
+		dispatch( resetAutosave( autosaveResponse[ 0 ] ) );
+	}
+};

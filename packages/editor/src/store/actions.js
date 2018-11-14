@@ -46,6 +46,20 @@ export function resetPost( post ) {
 }
 
 /**
+ * Returns an action object used to fetch an autosave.
+ *
+ * @param {Object} postID Autosave post object.
+ *
+ * @return {Object} Action object.
+ */
+export function fetchAutosave( postID ) {
+	return {
+		type: 'FETCH_AUTOSAVE',
+		postID,
+	};
+}
+
+/**
  * Returns an action object used in signalling that the latest autosave of the
  * post has been received, by initialization or autosave.
  *

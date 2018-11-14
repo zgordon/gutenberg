@@ -48,6 +48,7 @@ import {
 	receiveReusableBlocks,
 } from './effects/reusable-blocks';
 import {
+	fetchAutosave,
 	requestPostUpdate,
 	requestPostUpdateSuccess,
 	requestPostUpdateFailure,
@@ -152,6 +153,9 @@ export default {
 	TRASH_POST_FAILURE: trashPostFailure,
 	REFRESH_POST: ( action, store ) => {
 		refreshPost( action, store );
+	},
+	FETCH_AUTOSAVE: ( action, store ) => {
+		fetchAutosave( action, store );
 	},
 	MERGE_BLOCKS( action, store ) {
 		const { dispatch } = store;
