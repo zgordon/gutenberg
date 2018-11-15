@@ -197,6 +197,7 @@ export default compose( [
 			getCurrentPostAttribute,
 			getAutosaveAttribute,
 			getEditedPostAttribute,
+			getAutosave,
 			isEditedPostSaveable,
 			isEditedPostAutosaveable,
 		} = select( 'core/editor' );
@@ -204,8 +205,10 @@ export default compose( [
 			getPostType,
 		} = select( 'core' );
 		const postType = getPostType( getEditedPostAttribute( 'type' ) );
+		const postId = getCurrentPostId();
 		return {
-			postId: getCurrentPostId(),
+			postId,
+			autosave: getAutosave( postId ),
 			currentPostLink: getCurrentPostAttribute( 'link' ),
 			previewLink: getAutosaveAttribute( 'preview_link' ),
 			isSaveable: isEditedPostSaveable(),
