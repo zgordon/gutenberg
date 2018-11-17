@@ -77,11 +77,7 @@ class PostPermalink extends Component {
 	}
 
 	render() {
-<<<<<<< HEAD
-		const { isNew, postLink, permalinkParts, postSlug, postTitle, postID, isEditable, isPublished } = this.props;
-=======
 		const { currentSlug, currentTitle, isEditable, isNew, isPublished, permalinkParts, postLink } = this.props;
->>>>>>> Make permalink editing more timely and accurate
 
 		if ( isNew || ! postLink ) {
 			return null;
@@ -91,11 +87,7 @@ class PostPermalink extends Component {
 		const ariaLabel = isCopied ? __( 'Permalink copied' ) : __( 'Copy the permalink' );
 
 		const { prefix, suffix } = permalinkParts;
-<<<<<<< HEAD
-		const slug = postSlug || cleanForSlug( postTitle ) || postID;
-=======
 		const slug = this.getDisplaySlug();
->>>>>>> Make permalink editing more timely and accurate
 		const samplePermalink = ( isEditable ) ? prefix + slug + suffix : prefix;
 
 		return (
@@ -168,12 +160,12 @@ class PostPermalink extends Component {
 export default compose( [
 	withSelect( ( select ) => {
 		const {
-			isCleanNewPost,
-			isCurrentPostPublished,
 			isPermalinkEditable,
+			getCurrentPost,
+			isCurrentPostPublished,
+			isCleanNewPost,
 			isSavingPost,
 			getAutosaveAttribute,
-			getCurrentPost,
 			getEditedPostAttribute,
 			getPermalinkParts,
 		} = select( 'core/editor' );
@@ -181,14 +173,14 @@ export default compose( [
 		const { id, link, title, status } = getCurrentPost();
 
 		return {
-			currentSlug: getEditedPostAttribute( 'slug' ),
-			isEditable: isPermalinkEditable(),
 			isNew: isCleanNewPost(),
+			postLink: link,
+			isEditable: isPermalinkEditable(),
 			isPublished: isCurrentPostPublished(),
 			isSaving: isSavingPost(),
+			currentSlug: getEditedPostAttribute( 'slug' ),
 			permalinkParts: getPermalinkParts(),
 			postID: id,
-			postLink: link,
 			postStatus: status,
 			postTitle: title,
 			savedSlug: getAutosaveAttribute( 'generated_slug' ),
