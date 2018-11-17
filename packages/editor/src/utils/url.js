@@ -30,9 +30,9 @@ export function getWPAdminURL( page, query ) {
  *
  * Converts whitespace, periods, forward slashes and underscores to hyphens.
  * Converts Latin-1 Supplement and Latin Extended-A letters to basic Latin
- * letters. Removes combining diacritical marks. Converts remaining string
- * to lowercase. It does not touch octets, HTML entities, or other encoded
- * characters.
+ * letters. Removes combining diacritical marks. Removes leading and trailing
+ * hyphens. Converts remaining string to lowercase. It does not touch octets,
+ * HTML entities, or other encoded characters.
  *
  * @param {string} string Title or slug to be processed
  *
