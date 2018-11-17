@@ -1204,6 +1204,8 @@ export function autosave( state = null, action ) {
 				title,
 				excerpt,
 				content,
+				preview_link: post.preview_link,
+				generated_slug: post.generated_slug,
 			};
 	}
 
