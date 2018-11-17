@@ -17,6 +17,7 @@ import { safeDecodeURI } from '@wordpress/url';
  * Internal Dependencies
  */
 import PostPermalinkEditor from './editor.js';
+import PostPreviewButton from '../post-preview-button';
 import { getWPAdminURL, cleanForSlug } from '../../utils/url';
 
 class PostPermalink extends Component {
@@ -56,8 +57,31 @@ class PostPermalink extends Component {
 		window.removeEventListener( 'visibilitychange', this.addVisibilityCheck );
 	}
 
+	getDisplaySlug() {
+		const { currentSlug, currentTitle, isPublished, isSaving, permalinkParts, postID, savedSlug, postTitle } = this.props;
+
+		if ( isPublished ) {
+			return currentSlug || savedSlug || cleanForSlug( currentTitle ) || postID;
+		}
+
+		let alternateSlug;
+		// If there is no saved or edited slug and the titles are the same
+		// then there may be a php generated slug available on the current_post.
+		// isSaving check is required because the title edit is cleared
+		// before the generated_slug value is set from the response.
+		if ( postTitle === currentTitle && 'auto-draft' !== permalinkParts.postName && ! isSaving ) {
+			alternateSlug = permalinkParts.postName;
+		}
+
+		return currentSlug || alternateSlug || savedSlug || cleanForSlug( currentTitle ) || postID;
+	}
+
 	render() {
+<<<<<<< HEAD
 		const { isNew, postLink, permalinkParts, postSlug, postTitle, postID, isEditable, isPublished } = this.props;
+=======
+		const { currentSlug, currentTitle, isEditable, isNew, isPublished, permalinkParts, postLink } = this.props;
+>>>>>>> Make permalink editing more timely and accurate
 
 		if ( isNew || ! postLink ) {
 			return null;
@@ -67,7 +91,11 @@ class PostPermalink extends Component {
 		const ariaLabel = isCopied ? __( 'Permalink copied' ) : __( 'Copy the permalink' );
 
 		const { prefix, suffix } = permalinkParts;
+<<<<<<< HEAD
 		const slug = postSlug || cleanForSlug( postTitle ) || postID;
+=======
+		const slug = this.getDisplaySlug();
+>>>>>>> Make permalink editing more timely and accurate
 		const samplePermalink = ( isEditable ) ? prefix + slug + suffix : prefix;
 
 		return (
@@ -83,16 +111,25 @@ class PostPermalink extends Component {
 
 				<span className="editor-post-permalink__label">{ __( 'Permalink:' ) }</span>
 
-				{ ! isEditingPermalink &&
+				{ ! isEditingPermalink && isPublished &&
 					<ExternalLink
 						className="editor-post-permalink__link"
 						href={ ! isPublished ? postLink : samplePermalink }
 						target="_blank"
 						ref={ ( linkElement ) => this.linkElement = linkElement }
 					>
-						{ safeDecodeURI( samplePermalink ) }
+						{ ( currentTitle || currentSlug ) ? safeDecodeURI( samplePermalink ) : postLink }
 						&lrm;
 					</ExternalLink>
+				}
+
+				{ ! isEditingPermalink && ! isPublished &&
+					<PostPreviewButton
+						isPermalink={ true }
+						className="editor-post-permalink__link"
+						samplePermalink={ samplePermalink }
+						linkElement={ ( linkElement ) => this.linkElement = linkElement }
+					/>
 				}
 
 				{ isEditingPermalink &&
@@ -102,7 +139,7 @@ class PostPermalink extends Component {
 					/>
 				}
 
-				{ isEditable && ! isEditingPermalink &&
+				{ isEditable && ! isEditingPermalink && ! isNew &&
 					<Button
 						className="editor-post-permalink__edit"
 						isLarge
@@ -131,25 +168,30 @@ class PostPermalink extends Component {
 export default compose( [
 	withSelect( ( select ) => {
 		const {
-			isEditedPostNew,
-			isPermalinkEditable,
-			getCurrentPost,
-			getPermalinkParts,
-			getEditedPostAttribute,
+			isCleanNewPost,
 			isCurrentPostPublished,
+			isPermalinkEditable,
+			isSavingPost,
+			getAutosaveAttribute,
+			getCurrentPost,
+			getEditedPostAttribute,
+			getPermalinkParts,
 		} = select( 'core/editor' );
 
-		const { id, link } = getCurrentPost();
+		const { id, link, title, status } = getCurrentPost();
 
 		return {
-			isNew: isEditedPostNew(),
-			postLink: link,
-			permalinkParts: getPermalinkParts(),
-			postSlug: getEditedPostAttribute( 'slug' ),
+			currentSlug: getEditedPostAttribute( 'slug' ),
 			isEditable: isPermalinkEditable(),
+			isNew: isCleanNewPost(),
 			isPublished: isCurrentPostPublished(),
-			postTitle: getEditedPostAttribute( 'title' ),
+			isSaving: isSavingPost(),
+			permalinkParts: getPermalinkParts(),
 			postID: id,
+			postLink: link,
+			postStatus: status,
+			postTitle: title,
+			savedSlug: getAutosaveAttribute( 'generated_slug' ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
