@@ -160,10 +160,10 @@ class PostPermalink extends Component {
 export default compose( [
 	withSelect( ( select ) => {
 		const {
+			isEditedPostNew,
 			isPermalinkEditable,
 			getCurrentPost,
 			isCurrentPostPublished,
-			isCleanNewPost,
 			isSavingPost,
 			getAutosaveAttribute,
 			getEditedPostAttribute,
@@ -173,7 +173,7 @@ export default compose( [
 		const { id, link, title, status } = getCurrentPost();
 
 		return {
-			isNew: isCleanNewPost(),
+			isNew: isEditedPostNew(),
 			postLink: link,
 			isEditable: isPermalinkEditable(),
 			isPublished: isCurrentPostPublished(),
@@ -184,6 +184,7 @@ export default compose( [
 			postStatus: status,
 			postTitle: title,
 			savedSlug: getAutosaveAttribute( 'generated_slug' ),
+			currentTitle: getEditedPostAttribute( 'title' ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
