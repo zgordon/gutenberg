@@ -688,9 +688,14 @@ export class RichText extends Component {
 		if ( shouldReapply ) {
 			const record = this.formatToValue( value );
 
-			// Maintain the previous selection:
-			record.start = this.state.start;
-			record.end = this.state.end;
+			// If we always specify this the selection will go to this RichText
+			// regardless whether is is actually the currently selected one.
+			// So check if this RichText is the selected one.
+			if ( this.props.isSelected ) {
+				// Maintain the previous selection:
+				record.start = this.state.start;
+				record.end = this.state.end;
+			}
 
 			this.applyRecord( record );
 		}
