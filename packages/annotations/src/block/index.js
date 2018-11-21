@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { uniq } from 'lodash';
+
+/**
  * WordPress dependencies
  */
 import { addFilter } from '@wordpress/hooks';
@@ -15,9 +20,9 @@ const addAnnotationClassName = ( OriginalComponent ) => {
 		const annotations = select( 'core/annotations' ).__experimentalGetAnnotationsForBlock( clientId );
 
 		return {
-			className: annotations.map( ( annotation ) => {
+			className: uniq( annotations.map( ( annotation ) => {
 				return 'is-annotated-by-' + annotation.source;
-			} ),
+			} ) ).join( ' ' ),
 		};
 	} )( OriginalComponent );
 };
