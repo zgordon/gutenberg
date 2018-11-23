@@ -17,7 +17,6 @@ import { Toolbar } from '@wordpress/components';
 import { BlockFormatControls } from '@wordpress/editor';
 import {
 	isEmpty,
-	apply,
 	create,
 	split,
 	unstableToDom,
@@ -62,24 +61,6 @@ export class RichText extends Component {
 		const { start, end } = this.state;
 
 		return { formats, text, start, end };
-	}
-
-	applyRecord( record ) {
-		const current = unstableToDom( {
-			value: this.getRecord(),
-		} ).body
-		try {
-			apply( {
-				value: record,
-				current: current,
-			} );
-		} catch (e) {
-			// This is terrible, we need a better check or fixing JSDOM
-			if ( e.message == "Wrong document") {
-				// JSDOM is not playing nice
-				console.log("ignoring dom exception");
-			}
-		}
 	}
 
 	/*
@@ -148,8 +129,6 @@ export class RichText extends Component {
 	}
 
 	onFormatChange( record ) {
-		this.applyRecord( record );
-
 		const { start, end } = record;
 		this.lastContent = this.valueToFormat( record );
 		this.props.onChange( {
