@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test transforms individual transforms work as expected Code block should transform to Preformatted block. fixture: core__code 1`] = `
+"<!-- wp:preformatted -->
+<pre class=\\"wp-block-preformatted\\">export default function MyButton() {
+	return <Button>Click Me!</Button>;
+}</pre>
+<!-- /wp:preformatted -->"
+`;
+
+exports[`test transforms individual transforms work as expected Paragraph block should transform to Heading block. fixture: core__paragraph__align-right 1`] = `
+"<!-- wp:heading -->
+<h2>... like this one, which is separate from the above and right aligned.</h2>
+<!-- /wp:heading -->"
+`;
+
+exports[`test transforms individual transforms work as expected Paragraph block should transform to List block. fixture: core__paragraph__align-right 1`] = `
+"<!-- wp:list -->
+<ul><li>... like this one, which is separate from the above and right aligned.</li></ul>
+<!-- /wp:list -->"
+`;
+
+exports[`test transforms individual transforms work as expected Paragraph block should transform to Preformatted block. fixture: core__paragraph__align-right 1`] = `
+"<!-- wp:preformatted -->
+<pre class=\\"wp-block-preformatted\\">... like this one, which is separate from the above and right aligned.</pre>
+<!-- /wp:preformatted -->"
+`;
+
+exports[`test transforms individual transforms work as expected Paragraph block should transform to Quote block. fixture: core__paragraph__align-right 1`] = `
+"<!-- wp:quote -->
+<blockquote class=\\"wp-block-quote\\"><p>... like this one, which is separate from the above and right aligned.</p></blockquote>
+<!-- /wp:quote -->"
+`;
+
+exports[`test transforms individual transforms work as expected Paragraph block should transform to Verse block. fixture: core__paragraph__align-right 1`] = `
+"<!-- wp:verse -->
+<pre class=\\"wp-block-verse\\">... like this one, which is separate from the above and right aligned.</pre>
+<!-- /wp:verse -->"
+`;
