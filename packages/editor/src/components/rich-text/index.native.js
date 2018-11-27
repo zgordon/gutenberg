@@ -227,15 +227,10 @@ export class RichText extends Component {
 		return value;
 	}
 
-	shouldComponentUpdate( nextProps, nextState ) {
-		if ( nextProps.tagName !== this.props.tagName ) {
+	shouldComponentUpdate( nextProps ) {
+		if ( nextProps.tagName !== this.props.tagName || nextProps.isSelected !== this.props.isSelected ) {
 			this.lastEventCount = undefined;
 			this.lastContent = undefined;
-			return true;
-		}
-
-		// Update if selection changed
-		if ( nextState.start !== this.state.start || nextState.end !== this.state.end ) {
 			return true;
 		}
 
