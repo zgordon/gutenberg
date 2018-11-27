@@ -1,6 +1,7 @@
 /**
  * External Dependencies
  */
+import classnames from 'classnames';
 import { filter, pick, map, get } from 'lodash';
 
 /**
@@ -284,17 +285,39 @@ class GalleryEdit extends Component {
 						);
 					} ) }
 					{ isSelected &&
-						<li className="blocks-gallery-item has-add-item-button">
+						<li className={ classnames(
+							'blocks-gallery-item',
+							'has-add-item-button',
+							'block-library-gallery-add-item'
+						) }>
 							<FormFileUpload
 								multiple
 								isLarge
-								className="block-library-gallery-add-item-button"
 								onChange={ this.uploadFromFiles }
 								accept="image/*"
 								icon="insert"
+								className="block-library-gallery-add-item__upload-button"
 							>
 								{ __( 'Upload an image' ) }
 							</FormFileUpload>
+							<MediaUpload
+								onSelect={ this.onSelectImages }
+								allowedTypes={ ALLOWED_MEDIA_TYPES }
+								galleryOpenInLibrary
+								multiple
+								gallery
+								value={ images.map( ( img ) => img.id ) }
+								render={ ( { open } ) => (
+									<IconButton
+										icon="admin-media"
+										isLarge
+										onClick={ open }
+										className="block-library-gallery-add-item__media-library-button"
+									>
+										{ __( 'Media Library' ) }
+									</IconButton>
+								) }
+							/>
 						</li>
 					}
 				</ul>
