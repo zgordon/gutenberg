@@ -1,3 +1,9 @@
+## 2.3.0 (Unreleased)
+
+### New Feature
+
+- Default fetch handler can be overridden with a custom fetch handler
+
 ## 2.2.5 (2018-11-20)
 
 ## 2.2.4 (2018-11-15)
