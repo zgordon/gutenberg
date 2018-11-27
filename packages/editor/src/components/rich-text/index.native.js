@@ -3,34 +3,28 @@
  */
 import RCTAztecView from 'react-native-aztec';
 import { View } from 'react-native';
-import {
-	forEach,
-	merge,
-} from 'lodash';
 
 /**
  * WordPress dependencies
  */
 import { Component, RawHTML } from '@wordpress/element';
 import { withInstanceId, compose } from '@wordpress/compose';
-import { Toolbar } from '@wordpress/components';
 import { BlockFormatControls } from '@wordpress/editor';
 import {
 	isEmpty,
 	create,
 	split,
-	unstableToDom,
 	toHTMLString,
 } from '@wordpress/rich-text';
 import { BACKSPACE } from '@wordpress/keycodes';
 import { children } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import FormatEdit from './format-edit';
 import FormatToolbar from './format-toolbar';
+import { withBlockEditContext } from '../block-edit/context';
 
 const isRichTextValueEmpty = ( value ) => {
 	return ! value || ! value.length;
@@ -39,7 +33,6 @@ const isRichTextValueEmpty = ( value ) => {
 export class RichText extends Component {
 	constructor() {
 		super( ...arguments );
-		this.getRecord = this.getRecord.bind( this );
 		this.onChange = this.onChange.bind( this );
 		this.onEnter = this.onEnter.bind( this );
 		this.onBackspace = this.onBackspace.bind( this );
@@ -129,12 +122,8 @@ export class RichText extends Component {
 	}
 
 	onFormatChange( record ) {
-		const { start, end } = record;
-		this.lastContent = this.valueToFormat( record );
-		this.props.onChange( {
-			content: this.lastContent
-		} );
-		this.setState( { start, end } );
+		const newContent = this.valueToFormat( record );
+		this.props.onChange( newContent );
 	}
 
 	/*
@@ -148,17 +137,14 @@ export class RichText extends Component {
 		return html.replace( openingTagRegexp, '' ).replace( closingTagRegexp, '' );
 	}
 
-	/**
+	/*
 	 * Handles any case where the content of the AztecRN instance has changed
 	 */
-
 	onChange( event ) {
 		this.lastEventCount = event.nativeEvent.eventCount;
 		const contentWithoutRootTag = this.removeRootTagsProduceByAztec( event.nativeEvent.text );
 		this.lastContent = contentWithoutRootTag;
-		this.props.onChange( {
-			content: this.lastContent,
-		} );
+		this.props.onChange( this.lastContent );
 	}
 
 	/**
@@ -170,8 +156,7 @@ export class RichText extends Component {
 		this.forceUpdate(); // force re-render the component skipping shouldComponentUpdate() See: https://reactjs.org/docs/react-component.html#forceupdate
 		this.props.onContentSizeChange( {
 			aztecHeight: contentHeight,
-		}
-		);
+		} );
 	}
 
 	// eslint-disable-next-line no-unused-vars
@@ -209,8 +194,10 @@ export class RichText extends Component {
 		}
 	}
 
-	onSelectionChange(start, end, text) {
-		this.setState( { ...this.state, start, end } );
+	onSelectionChange( start, end, text ) {
+		const realStart = Math.min( start, end );
+		const realEnd = Math.max( start, end );
+		this.setState( { start: realStart, end: realEnd, text } );
 	}
 
 	isEmpty() {
@@ -240,12 +227,18 @@ export class RichText extends Component {
 		return value;
 	}
 
-	shouldComponentUpdate( nextProps ) {
+	shouldComponentUpdate( nextProps, nextState ) {
 		if ( nextProps.tagName !== this.props.tagName ) {
 			this.lastEventCount = undefined;
 			this.lastContent = undefined;
 			return true;
 		}
+
+		// Update if selection changed
+		if ( nextState.start !== this.state.start || nextState.end !== this.state.end ) {
+			return true;
+		}
+
 		// The check below allows us to avoid updating the content right after an `onChange` call.
 		// The first time the component is drawn `lastContent` and `lastEventCount ` are both undefined
 		if ( this.lastEventCount &&
@@ -285,12 +278,11 @@ export class RichText extends Component {
 					<BlockFormatControls>
 						<FormatToolbar controls={ formattingControls } />
 					</BlockFormatControls>
-				)}
+				) }
 				<RCTAztecView
 					ref={ ( ref ) => {
 						this._editor = ref;
-					}
-					}
+					} }
 					text={ { text: html, eventCount: this.lastEventCount } }
 					onChange={ this.onChange }
 					onFocus={ this.props.onFocus }
@@ -298,7 +290,7 @@ export class RichText extends Component {
 					onBackspace={ this.onBackspace }
 					onContentSizeChange={ this.onContentSizeChange }
 					onSelectionChange={ this.onSelectionChange }
-					isSelected={ this.props.isSelected }
+					isSelected={ isSelected }
 					color={ 'black' }
 					maxImagesWidth={ 200 }
 					style={ style }
@@ -316,6 +308,28 @@ RichText.defaultProps = {
 
 const RichTextContainer = compose( [
 	withInstanceId,
+	withBlockEditContext( ( context, ownProps ) => {
+		// When explicitly set as not selected, do nothing.
+		if ( ownProps.isSelected === false ) {
+			return {
+				clientId: context.clientId,
+			};
+		}
+		// When explicitly set as selected, use the value stored in the context instead.
+		if ( ownProps.isSelected === true ) {
+			return {
+				isSelected: context.isSelected,
+				clientId: context.clientId,
+			};
+		}
+
+		// Ensures that only one RichText component can be focused.
+		return {
+			isSelected: context.isSelected && context.focusedElement === ownProps.instanceId,
+			setFocusedElement: context.setFocusedElement,
+			clientId: context.clientId,
+		};
+	} ),
 ] )( RichText );
 
 RichTextContainer.Content = ( { value, format, tagName: Tag, ...props } ) => {
