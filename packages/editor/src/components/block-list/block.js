@@ -753,8 +753,8 @@ const applyWithDispatch = withDispatch( ( dispatch, ownProps, { select } ) => {
 		onMerge( ...args ) {
 			mergeBlocks( ...args );
 		},
-		onReplace( blocks ) {
-			replaceBlocks( [ ownProps.clientId ], blocks );
+		onReplace( blocks, index ) {
+			replaceBlocks( [ ownProps.clientId ], blocks, index );
 		},
 		onMetaChange( meta ) {
 			editPost( { meta } );
