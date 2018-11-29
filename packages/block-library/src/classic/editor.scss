@@ -125,14 +125,13 @@
 
 	/* Image resize handles */
 	.mce-content-body div.mce-resizehandle {
-		border-color: #72777c;
+		border-color: $dark-gray-800;
 		width: 6px;
 		height: 6px;
 	}
 
 	.mce-content-body img[data-mce-selected] {
-		outline: 1px solid #72777c;
-		max-width: calc(100% - 4px);
+		outline: 1px solid $dark-gray-800;
 	}
 
 	.mce-content-body img[data-mce-resize="false"] {
@@ -160,17 +159,16 @@
 	}
 
 	.wp-caption-dd {
-		font-size: 14px;
 		padding-top: 0.5em;
 		margin: 0; /* browser reset */
 	}
 
 	/* WP Views */
 	.wpview {
-		width: 99.99%;
+		width: 99.99%; /* All IE need hasLayout, incl. 11 (ugh, not again!!) */
 		position: relative;
 		clear: both;
-		margin: 2px 2px 16px;
+		margin-bottom: 16px;
 		border: 1px solid transparent;
 	}
 
@@ -187,7 +185,7 @@
 	}
 
 	.wpview .loading-placeholder {
-		border: 1px dashed #ccc;
+		border: 1px dashed $light-gray-400;
 		padding: 10px;
 	}
 
@@ -201,7 +199,7 @@
 	}
 
 	.wpview-error {
-		border: 1px solid #ddd;
+		border: 1px solid $light-gray-400;
 		padding: 1em 0;
 		margin: 0;
 		word-wrap: break-word;
@@ -282,6 +280,20 @@
 		height: auto;
 		border: none;
 		padding: 0;
+	}
+}
+
+/* Inline toolbars (get appended to <body>) */
+.mce-inline-toolbar-grp {
+	.mce-btn.mce-active button,
+	.mce-btn.mce-active:hover button,
+	.mce-btn.mce-active i,
+	.mce-btn.mce-active:hover i {
+		color: $dark-gray-800;
+	}
+
+	.mce-btn i {
+		font-style: normal;
 	}
 }
 
