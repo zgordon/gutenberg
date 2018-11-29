@@ -1,5 +1,6 @@
 .wp-block-freeform.block-library-rich-text__tinymce {
 	overflow: hidden;
+	padding: 6px; /* For wpview outlines and image resize handles. */
 
 	p,
 	li {
@@ -115,6 +116,113 @@
 		outline: 0;
 		cursor: default;
 		border: 2px dashed rgb(186, 186, 186);
+	}
+
+	/* Remove blue highlighting of selected images in WebKit */
+	img[data-mce-selected]::selection {
+		background-color: transparent;
+	}
+
+	/* Image resize handles */
+	.mce-content-body div.mce-resizehandle {
+		border-color: #72777c;
+		width: 6px;
+		height: 6px;
+	}
+
+	.mce-content-body img[data-mce-selected] {
+		outline: 1px solid #72777c;
+		max-width: calc(100% - 4px);
+	}
+
+	.mce-content-body img[data-mce-resize="false"] {
+		outline: 0;
+	}
+
+	/* Image captions */
+	.wp-caption {
+		margin: 0; /* browser reset */
+		max-width: 100%;
+	}
+
+	dl.wp-caption dt.wp-caption-dt img {
+		display: inline-block;
+		margin-bottom: -1ex;
+	}
+
+	div.mceTemp {
+		-ms-user-select: element;
+	}
+
+	dl.wp-caption,
+	dl.wp-caption * {
+		-webkit-user-drag: none;
+	}
+
+	.wp-caption-dd {
+		font-size: 14px;
+		padding-top: 0.5em;
+		margin: 0; /* browser reset */
+	}
+
+	/* WP Views */
+	.wpview {
+		width: 99.99%;
+		position: relative;
+		clear: both;
+		margin: 2px 2px 16px;
+		border: 1px solid transparent;
+	}
+
+	.mce-shim {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+	}
+
+	.wpview[data-mce-selected="2"] .mce-shim {
+		display: none;
+	}
+
+	.wpview .loading-placeholder {
+		border: 1px dashed #ccc;
+		padding: 10px;
+	}
+
+	.wpview[data-mce-selected] .loading-placeholder {
+		border-color: transparent;
+	}
+
+	.wpview .wpview-content > iframe {
+		max-width: 100%;
+		background: transparent;
+	}
+
+	.wpview-error {
+		border: 1px solid #ddd;
+		padding: 1em 0;
+		margin: 0;
+		word-wrap: break-word;
+	}
+
+	.wpview[data-mce-selected] .wpview-error {
+		border-color: transparent;
+	}
+
+	.wpview-error .dashicons,
+	.loading-placeholder .dashicons {
+		display: block;
+		margin: 0 auto;
+		width: 32px;
+		height: 32px;
+		font-size: 32px;
+	}
+
+	.wpview-error p {
+		margin: 0;
+		text-align: center;
 	}
 
 	/**
