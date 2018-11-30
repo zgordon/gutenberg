@@ -1,9 +1,9 @@
 {
 	"rootDir": "../../",
 	"preset": "jest-puppeteer",
-	"setupTestFrameworkScriptFile": "<rootDir>/test/e2e/support/setup-test-framework.js",
+	"setupTestFrameworkScriptFile": "<rootDir>/packages/tests-e2e/support/setup-test-framework.js",
 	"testMatch": [
-		"<rootDir>/test/e2e/specs/**/(*.)test.js"
+		"**/tests-e2e/specs/**/(*.)test.js"
 	],
 	"transform": {
 		"^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest"
