@@ -111,6 +111,10 @@ if ( ! function_exists( 'register_tinymce_scripts' ) ) {
 function gutenberg_override_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false ) {
 	wp_deregister_script( $handle );
 	wp_register_script( $handle, $src, $deps, $ver, $in_footer );
+
+	if ( function_exists( 'wp_set_script_translations' ) ) {
+		wp_set_script_translations( $handle, 'gutenberg' );
+	}
 }
 
 /**

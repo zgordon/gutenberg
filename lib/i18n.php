@@ -38,17 +38,3 @@ function gutenberg_get_jed_locale_data( $domain ) {
 
 	return $locale;
 }
-
-/**
- * Load plugin text domain for translations.
- *
- * @since 0.1.0
- */
-function gutenberg_load_plugin_textdomain() {
-	load_plugin_textdomain(
-		'gutenberg',
-		false,
-		plugin_basename( gutenberg_dir_path() ) . '/languages/'
-	);
-}
-add_action( 'plugins_loaded', 'gutenberg_load_plugin_textdomain' );
