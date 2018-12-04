@@ -87,7 +87,7 @@ docker-compose $DOCKER_COMPOSE_FILE_OPTIONS run --rm $CONTAINER chmod -v 767 /va
 
 if [ "$POPULAR_PLUGINS" = "true" ]; then
 	echo -e $(status_message "Activating popular plugins...")
-	docker-compose $DOCKER_COMPOSE_FILE_OPTIONS run --rm $CLI --debug plugin install wordpress-seo --activate >/dev/null
+	docker-compose $DOCKER_COMPOSE_FILE_OPTIONS run --rm $CLI --debug plugin install wordpress-seo --activate
 	docker-compose $DOCKER_COMPOSE_FILE_OPTIONS run --rm $CLI plugin install jetpack --activate >/dev/null
 	docker-compose $DOCKER_COMPOSE_FILE_OPTIONS run --rm $CLI plugin install advanced-custom-fields --activate >/dev/null
 fi
