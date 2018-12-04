@@ -161,6 +161,10 @@ export class RichText extends Component {
 		} );
 	}
 
+	onActiveFormatAttributesChange( attributes ) {
+		console.log(attributes);
+	}
+
 	/*
 	 * Cleans up any root tags produced by aztec.
 	 * TODO: This should be removed on a later version when aztec doesn't return the top tag of the text being edited
@@ -327,6 +331,15 @@ export class RichText extends Component {
 	}
 
 	toggleFormat( format ) {
+		if (format == 'link') {
+			return () => {
+				if (this.isFormatActive(format)) {
+					this._editor.removeLink();
+				} else {
+					this._editor.setLink("wp.com")
+				}
+			};
+		}
 		return () => this.changeFormats( {
 			[ format ]: ! this.state.formats[ format ],
 		} );
@@ -369,6 +382,7 @@ export class RichText extends Component {
 					onBackspace={ this.onBackspace }
 					onContentSizeChange={ this.onContentSizeChange }
 					onActiveFormatsChange={ this.onActiveFormatsChange }
+					onActiveFormatAttributesChange={ this.onActiveFormatAttributesChange }
 					isSelected={ this.props.isSelected }
 					color={ 'black' }
 					maxImagesWidth={ 200 }
