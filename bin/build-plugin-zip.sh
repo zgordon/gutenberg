@@ -116,8 +116,6 @@ zip -r gutenberg.zip \
 	post-content.php \
 	$vendor_scripts \
 	$build_files \
-	languages/gutenberg.pot \
-	languages/gutenberg-translations.php \
 	README.md
 
 # Reset `gutenberg.php`.
