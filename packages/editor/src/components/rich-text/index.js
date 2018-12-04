@@ -647,7 +647,7 @@ export class RichText extends Component {
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		const { tagName, value, isSelected } = this.props;
+		const { tagName, value } = this.props;
 
 		if (
 			tagName === prevProps.tagName &&
@@ -666,7 +666,7 @@ export class RichText extends Component {
 
 			const record = this.formatToValue( value );
 
-			if ( isSelected ) {
+			if ( document.activeElement === this.editableRef ) {
 				record.start = prevState.start;
 				record.end = prevState.end;
 			}
