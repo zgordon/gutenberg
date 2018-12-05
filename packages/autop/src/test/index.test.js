@@ -495,3 +495,10 @@ test( 'that autop doses not add extra closing p in figure', () => {
 	expect( autop( content1 ).trim() ).toBe( expected1 );
 	expect( autop( content2 ).trim() ).toBe( expected2 );
 } );
+
+test( 'that autop correctly adds start and end tag when followed by a div', () => {
+	const content = 'Testing freeform block with some\n<div class="wp-some-class">content</div>';
+	const expected = '<p>Testing freeform block with some</p>\n<div class="wp-some-class">content</div>';
+
+	expect( autop( content ).trim() ).toBe( expected );
+} );
