@@ -353,16 +353,6 @@ export default class TinyMCE extends Component {
 			onBlur,
 		} = this.props;
 
-		/*
-		 * The role=textbox and aria-multiline=true must always be used together
-		 * as TinyMCE always behaves like a sort of textarea where text wraps in
-		 * multiple lines. Only the table block editable element is excluded.
-		 */
-		if ( tagName !== 'table' ) {
-			ariaProps.role = 'textbox';
-			ariaProps[ 'aria-multiline' ] = true;
-		}
-
 		// If a default value is provided, render it into the DOM even before
 		// TinyMCE finishes initializing. This avoids a short delay by allowing
 		// us to show and focus the content before it's truly ready to edit.
