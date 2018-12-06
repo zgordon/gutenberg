@@ -19,6 +19,7 @@ _Example:_
 ```json
 {
 	"scripts": {
+		"lint:css": "wp-scripts lint-style '**/*.css'",
 		"lint:pkg-json": "wp-scripts lint-pkg-json .",
 		"test": "wp-scripts test-unit-js"
 	}
@@ -42,7 +43,7 @@ _Example:_
 ```
 
 This is how you execute the script with presented setup:
-* `npm run lint:js` - lints JavaScripts files in the whole project's.
+* `npm run lint:js` - lints JavaScripts files in the whole project's directory.
 
 ### `wp-scripts lint-pkg-json`
 
@@ -60,6 +61,23 @@ _Example:_
 
 This is how you execute those scripts using the presented setup:
 * `npm run lint:pkg-json` - lints `package.json` file in the project's root folder.
+
+### `lint-style`
+
+Helps enforce coding style guidelines for your style files. It uses [stylelint](https://github.com/stylelint/stylelint) with the set of default rules provided. You can override them with your own rules as described in [stylelint user guide](https://github.com/stylelint/stylelint/docs/user-guide.md).
+
+_Example:_
+
+```json
+{
+	"scripts": {
+		"lint:css": "wp-scripts lint-style '**/*.css'"
+	}
+}
+```
+
+This is how you execute the script with presented setup:
+* `npm run lint:css` - lints CSS files in the whole project's directory.
 
 ### `wp-scripts test-unit-js`
 
