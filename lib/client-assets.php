@@ -1082,6 +1082,7 @@ function gutenberg_editor_scripts_and_styles( $hook ) {
 		sprintf( '/wp/v2/types/%s?context=edit', $post_type ),
 		sprintf( '/wp/v2/users/me?post_type=%s&context=edit', $post_type ),
 		array( '/wp/v2/media', 'OPTIONS' ),
+		array( '/wp/v2/blocks', 'OPTIONS' ),
 	);
 
 	/**
