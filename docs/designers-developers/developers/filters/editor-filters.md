@@ -16,3 +16,14 @@ var withImageSize = function( size, mediaId, postId ) {
 wp.hooks.addFilter( 'editor.PostFeaturedImage.imageSize', 'my-plugin/with-image-size', withImageSize );
 ```
 
+
+### `editor.PostAuthor.disabled`
+
+Used to disable the PostAuthor component, this is the author list in the sidebar. This can be used if you have a post type that does support `author` but you do not want the author component shown.  You can use [remove_post_type_support](https://developer.wordpress.org/reference/functions/remove_post_type_support/) to disable the component by post type.
+
+_Example:_
+
+```js
+wp.hooks.addFilter( 'editor.PostAuthor.disabled', 'my_callback', function() { return true; } );
+```
+
