@@ -8,6 +8,7 @@ import { get } from 'lodash';
  */
 import { withInstanceId, compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -16,6 +17,11 @@ import PostTypeSupportCheck from '../post-type-support-check';
 
 export function PostAuthorCheck( { hasAssignAuthorAction, authors, children } ) {
 	if ( ! hasAssignAuthorAction || authors.length < 2 ) {
+		return null;
+	}
+
+	const isDisabled = applyFilters( 'editor.PostAuthor.disabled', false );
+	if ( isDisabled ) {
 		return null;
 	}
 
