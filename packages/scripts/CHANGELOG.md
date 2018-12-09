@@ -2,7 +2,7 @@
 
 ### New Feature
 
-- Added support for `lint-style` script ([#XXXXX](https://github.com/WordPress/gutenberg/pull/XXXXX))
+- Added support for `lint-style` script ([#12722](https://github.com/WordPress/gutenberg/pull/12722))
 
 ## 2.4.4 (2018-11-20)
 
