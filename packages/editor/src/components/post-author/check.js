@@ -20,9 +20,9 @@ export function PostAuthorCheck( { hasAssignAuthorAction, authors, children } ) 
 		return null;
 	}
 
-	const isDisabled = applyFilters( 'editor.PostAuthor.disabled', false );
-	if ( isDisabled ) {
-		return null;
+	const component = applyFilters( 'editor.PostAuthor.component', children );
+	if ( component ) {
+		return component;
 	}
 
 	return <PostTypeSupportCheck supportKeys="author">{ children }</PostTypeSupportCheck>;
