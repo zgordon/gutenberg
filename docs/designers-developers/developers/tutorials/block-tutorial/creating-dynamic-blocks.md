@@ -1,4 +1,4 @@
-# Creating dynamic blocks
+# Creating Dynamic Blocks
 
 Dynamic blocks are blocks that can change their content even if the post is not saved. One example from WordPress itself is the latest posts block. This block will update everywhere it is used when a new post is published.
 
