@@ -34,8 +34,10 @@ A block requires a few properties to be specified before it can be registered su
 This is the display title for your block, which can be translated with our translation functions. The block inserter will show this name.
 
 ```js
-// Our data object
-title: __( 'Book' )
+registerBlockType( 'my-plugin/book', {
+  // Title for block
+  title: __( 'Book' ),
+} );
 ```
 
 #### Description (optional)
@@ -45,7 +47,11 @@ title: __( 'Book' )
 This is a short description for your block, which can be translated with our translation functions. This will be shown in the Block Tab in the Settings Sidebar.
 
 ```js
-description: __( 'Block showing a Book card.' )
+registerBlockType( 'my-plugin/book', {
+  title: __( 'Book' ),
+  // Description for block
+  description: __( 'Block showing a Book card.' )
+} );
 ```
 
 #### Category
